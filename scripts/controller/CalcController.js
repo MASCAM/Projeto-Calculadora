@@ -3,7 +3,7 @@ class CalcController {
     constructor() {
 
         this._displayCalc = "0" //underline significa private
-        this._dataAtual;        //Private: somente atributos e métodos da própria classe podem acessar esse atributo ou método
+        this._currentDate;        //Private: somente atributos e métodos da própria classe podem acessar esse atributo ou método
 
     }
 
@@ -21,13 +21,13 @@ class CalcController {
 
     get dataAtual() {
 
-        return this._dataAtual;
+        return this._currentDate;
 
     }
 
     set dataAtual(valor) {
 
-        this._dataAtual = valor;
+        this._currentDate = valor;
 
     }
 
