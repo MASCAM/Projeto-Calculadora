@@ -2,7 +2,11 @@ class CalcController {
 
     constructor() {
 
-        this._displayCalc = "0" //underline significa private
+        this._locale = 'pt-BR';
+        this._displayCalcEl = document.querySelector("#display"); 
+        this._dateEl = document.querySelector("#data"); 
+        this._timeEl = document.querySelector("#hora"); 
+        //underline significa private
         this._currentDate;        //Private: somente atributos e métodos da própria classe podem acessar esse atributo ou método
         this.initialize();
 
@@ -10,31 +14,60 @@ class CalcController {
 
     initialize() {
 
-        
+        setInterval(()=>{
+
+            this.displayDate = this.currentDate.toLocaleDateString(this._locale); 
+            this.displayTime = this.currentDate.toLocaleTimeString(this._locale);
+
+        }, 1000);
+
+    }
+    
+    get displayTime() {
+
+        return this._timeEl.innerHTML;
+
+    }
+
+    set displayTime(value) {
+
+        return this._timeEl.innerHTML = value;
+
+    }
+
+    get displayDate() {
+
+        return this._dateEl.innerHTML;
+
+    }
+
+    set displayDate(value) {
+
+        return this._dateEl.innerHTML = value;
 
     }
 
     get displayCalc() {
 
-        return this._displayCalc;
+        return this._displayCalcEl.innerHTML;
 
     }
 
-    set displayCalc(valor) {
+    set displayCalc(value) {
 
-        this._displayCalc = valor;
-
-    }
-
-    get dataAtual() {
-
-        return this._currentDate;
+        this._displayCalcEl.innerHTML = value;
 
     }
 
-    set dataAtual(valor) {
+    get currentDate() {
+        //currentDate.toLocaleDateString("pt-BR", {month: 'short'}) para mostrar uma abreviação por extenso do mês atual
+        return new Date();
 
-        this._currentDate = valor;
+    }
+
+    set currentDate(value) {
+
+        this._currentDate = value;
 
     }
 
