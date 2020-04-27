@@ -4,6 +4,13 @@ class CalcController {
 
         this._displayCalc = "0" //underline significa private
         this._currentDate;        //Private: somente atributos e métodos da própria classe podem acessar esse atributo ou método
+        this.initialize();
+
+    }
+
+    initialize() {
+
+        
 
     }
 
