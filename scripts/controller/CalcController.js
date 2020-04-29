@@ -14,6 +14,28 @@ class CalcController {
         this._currentDate;        //Private: somente atributos e métodos da própria classe podem acessar esse atributo ou método
         this.initialize();
         this.initButtonsEvents();
+        this.initKeyboard();
+
+    }
+
+    pasteFromClipboard() {
+
+        document.addEventListener('paste', e => {
+
+            e.clipboardData.getData('Text');
+
+        });
+
+    }
+
+    copyToClipboard() {
+
+        let input = document.createElement('input'); //cria um elemento pro documento
+        input.value = this.displayCalc;           //pega o valor que aparece na calculadora
+        document.body.appendChild(input);         //coloca o input pra dentro do documento
+        input.select();                           //seleciona o input
+        document.execCommand("Copy");             //efetivamente copia o input pro clipboard  
+        input.remove();                           //remove o input do documento
 
     }
 
@@ -26,6 +48,66 @@ class CalcController {
 
         }, 1000);
         this.setLastNumberToDisplay();
+
+    }
+
+    initKeyboard() {
+
+        document.addEventListener('keyup', e => {
+
+            switch(e.key) {
+
+                case 'Escape':
+                    this.clearAll();
+                    break;
+                case 'Backspace':
+                    this.clearEntry();
+                    break;
+                case '+':
+                case '-':
+                case '*':
+                case '/':
+                case '%':
+                    this.addOperation(e.key);
+                    break;
+                case 'Enter':
+                case '=':
+                    this._equal = true;
+                    this.calc();
+                    break;
+                case '.':
+                case ',':
+                    this.addDot();
+                    break;
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                    if (this._equal && !this.isOperator(this.getLastOperation())) {
+                        
+                        this.clearAll();
+                        this._equal = false;
+
+                    }
+                    this.addOperation(parseInt(e.key));
+                    break;
+                case 'c':
+                    if (e.ctrlKey) { //verifica se a tecla ctrl foi pressionada para poder copiar
+
+                        this.copyToClipboard();
+
+                    }
+                    break;
+
+            }
+
+        });
 
     }
 
@@ -250,7 +332,7 @@ class CalcController {
     }
 
     execBtn(value) {
-
+        //verifica qual dos botões foi clicado e passa a devida operação
         switch(value) {
 
             case 'ac':
@@ -291,8 +373,9 @@ class CalcController {
             case '7':
             case '8':
             case '9':
-                if (this._equal) {
-
+                if (this._equal && !this.isOperator(this.getLastOperation())) {
+                    //caso ja tenha pressionado enter e após isso pressiona um número
+                    //limpa a calculadora e apenas o último número pressionado será colocado no array
                     this.clearAll();
                     this._equal = false;
 
