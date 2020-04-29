@@ -4,6 +4,7 @@ class CalcController {
 
         this._lastOperator = '';
         this._lastNumber = '';
+        this._equal = false;
         this._operation = [];
         this._locale = 'pt-BR';
         this._displayCalcEl = document.querySelector("#display"); 
@@ -41,6 +42,8 @@ class CalcController {
     clearAll() {
 
         this._operation = []; //limpa o array de operadores
+        this._lastNumber = '';
+        this._lastOperator = '';
         this.setLastNumberToDisplay();
 
     }
@@ -124,8 +127,6 @@ class CalcController {
 
         }
 
-        console.log(this._lastNumber);
-        console.log(this._lastOperator);
 
         let result = this.getResult();
         if (last == '%') {
@@ -190,10 +191,6 @@ class CalcController {
                 //Trocar o operador
                 this.setLastOperation(value);
 
-            } else if (isNaN(value)) {
-                //outra coisa
-                console.log('Outra coisa', value);
-
             } else {
                 
                 this.pushOperation(value); //pega o array e adiciona um valor no final dele
@@ -208,15 +205,11 @@ class CalcController {
 
                 this.pushOperation(value);
 
-            } else if (isNaN(value)){
-                //outra coisa
-                console.log('Outra coisa', value);
-
             } else {
             
                 //Number
                 let newValue = this.getLastOperation().toString() + value.toString();
-                this.setLastOperation(parseInt(newValue));
+                this.setLastOperation(newValue);
                 //atualizar display
                 this.setLastNumberToDisplay();
 
@@ -231,6 +224,28 @@ class CalcController {
     setError() {
 
         this.displayCalc = "Error";
+
+    }
+
+    addDot() {
+
+        let lastOperation = this.getLastOperation();
+        if (typeof lastOperation === 'string' && lastOperation && lastOperation.split('').indexOf('.') > -1) {
+
+            return;
+
+        }
+
+        if (this.isOperator(lastOperation) || !lastOperation) {
+
+            this.pushOperation('0.');
+
+        } else {
+
+            this.setLastOperation(lastOperation.toString() + '.');
+
+        }
+        this.setLastNumberToDisplay();
 
     }
 
@@ -260,10 +275,11 @@ class CalcController {
                 this.addOperation('%');
                 break;
             case 'igual':
+                this._equal = true;
                 this.calc();
                 break;
             case 'ponto':
-                this.addOperation('.');
+                this.addDot();
                 break;
             case '0':
             case '1':
@@ -275,6 +291,12 @@ class CalcController {
             case '7':
             case '8':
             case '9':
+                if (this._equal) {
+
+                    this.clearAll();
+                    this._equal = false;
+
+                }
                 this.addOperation(parseInt(value));
                 break;
             default:
