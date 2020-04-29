@@ -2,7 +2,6 @@ class CalcController {
 
     constructor() {
 
-        this._pressedNumbers = 0;
         this._audio = new Audio('click.mp3');
         this._audioOnOff = false;
         this._lastOperator = '';
@@ -276,7 +275,6 @@ class CalcController {
 
     calc() {
 
-        this._pressedNumbers = 0;
         let last = '';
         this._lastOperator = this.getLastItem();
         if (this._operation.length < 3) {
@@ -346,6 +344,13 @@ class CalcController {
     setLastNumberToDisplay() {
 
         let lastNumber = this.getLastItem(false);
+        if (((lastNumber > 999999999) || (lastNumber < 0.0000001 && lastNumber.length > 9)) && (lastNumber))  {
+
+            this.clearAll();
+            this.setError();
+            return;
+
+        }
         let index;
         lastNumber = lastNumber.toString();
         if ((index = lastNumber.indexOf('.')) > -1) {
@@ -376,44 +381,15 @@ class CalcController {
             lastNumber = 0;
 
         }
-        
         this.displayCalc = lastNumber;
 
     }
 
     addOperation(value) {
 
-        if (this._operation.indexOf('.') > -1) {
+        if (this.getLastOperation() == '0' && value == '0') {
 
-            if (!isNaN(value)) {
-
-                this._pressedNumbers += 1;
-                if (this._pressedNumbers > 8) {
-
-                    this._pressedNumbers = 0;
-                    this.clearAll();
-                    this.setError();
-                    return;
-
-                }
-
-            }
-
-        } else {
-
-            if (!isNaN(value)) {
-
-                this._pressedNumbers += 1;
-                if (this._pressedNumbers > 9 || (this._pressedNumbers == 9 && value == '.')) {
-
-                    this._pressedNumbers = 0;
-                    this.clearAll();
-                    this.setError();
-                    return;
-
-                }
-
-            }    
+            return;
 
         }
         if (isNaN(this.getLastOperation())) {
@@ -460,7 +436,6 @@ class CalcController {
     setError() {
 
         this.displayCalc = "Error";
-        this._pressedNumbers = 0;
 
     }
 
