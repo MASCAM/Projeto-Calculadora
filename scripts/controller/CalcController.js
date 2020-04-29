@@ -22,7 +22,8 @@ class CalcController {
 
         document.addEventListener('paste', e => {
 
-            e.clipboardData.getData('Text');
+            let text = e.clipboardData.getData('Text');
+            this.displayCalc = parseFloat(text);
 
         });
 
@@ -48,6 +49,7 @@ class CalcController {
 
         }, 1000);
         this.setLastNumberToDisplay();
+        this.pasteFromClipboard();
 
     }
 
@@ -298,7 +300,6 @@ class CalcController {
             }
 
         }
-        console.log(this._operation);
 
     }
 
