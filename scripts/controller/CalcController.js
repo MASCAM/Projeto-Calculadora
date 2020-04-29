@@ -93,6 +93,7 @@ class CalcController {
 
         if (this._audioOnOff) {
 
+            this._audio.currentTime = 0;
             this._audio.play();
 
         }
@@ -331,16 +332,17 @@ class CalcController {
     setLastNumberToDisplay() {
 
         let lastNumber = this.getLastItem(false);
+        let index;
         lastNumber = lastNumber.toString();
         if (lastNumber.indexOf('.') > -1) {
 
-            console.log(lastNumber);
             lastNumber = Array.from(lastNumber);
             while (lastNumber.length > 10) {
 
                 lastNumber.pop();
 
             }
+            index = lastNumber.length;
             lastNumber = lastNumber.join('');
 
         }
@@ -350,6 +352,7 @@ class CalcController {
             lastNumber = 0;
 
         }
+        lastNumber = parseFloat(lastNumber).toFixed(index - 2);
         this.displayCalc = lastNumber;
 
     }
