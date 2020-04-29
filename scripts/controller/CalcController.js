@@ -261,9 +261,10 @@ class CalcController {
             let sign = false;
             for (let i = 0; i < this._operation.length; i++) {
 
-                if (this._operation[i] == '-' && sign == true) {
-
-                    this._operation[i] = '+';
+                if (this._operation[i] < 0 && sign == true) {
+                    console.log(this._operation[i]);
+                    this._operation[i] *= -1;
+                    console.log(this._operation[i]);
                     break;
 
                 } else if (this._operation[i] == '-') {
