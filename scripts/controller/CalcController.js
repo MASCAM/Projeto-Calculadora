@@ -47,9 +47,35 @@ class CalcController {
 
     }
 
+    getLastOperation() {
+
+        
+        return this._operation[this._operation.length - 1];
+
+    }
+
     addOperation(value) {
 
+        if (isNaN(this.getLastOperation())) {
+            //String
+            if (this.isOperator(value)) {
+                //Trocar o operador
+                
+
+            } else {
+                //outra coisa
+
+
+            }
+
+        } else {
+            //Number
+            let newValue = this.getLastOperation().toString() + value.toString();
+            this._operation.push(newValue);
+
+        }
         this._operation.push(value); //pega o array e adiciona um valor no final dele
+        
         console.log(this._operation);
 
     }
@@ -84,6 +110,9 @@ class CalcController {
 
                 break;
             case 'igual':
+
+                break;
+            case 'ponto':
 
                 break;
             case '0':
