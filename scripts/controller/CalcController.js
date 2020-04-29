@@ -257,8 +257,29 @@ class CalcController {
     getResult() {
 
         try { //tente resolver a expressão
+            
+            let sign = false;
+            for (let i = 0; i < this._operation.length; i++) {
 
-            return eval(this._operation.join(""));
+                if (this._operation[i] == '-' && sign == true) {
+
+                    this._operation[i] = '+';
+                    break;
+
+                } else if (this._operation[i] == '-') {
+
+                    sign = true;
+
+                }
+
+            }
+            let result = eval(this._operation.join(""));
+            if (result < 0.0000001 && result >= 0) {
+
+                result = 0;
+
+            }
+            return result;
 
         } catch { //senão conseguir aparece Error no display
 
@@ -307,6 +328,7 @@ class CalcController {
         } else {
             
             this._operation = [result];
+            console.log(this._operation);
             if (last) {
 
                 this._operation.push(last);
@@ -351,6 +373,7 @@ class CalcController {
             return;
 
         }
+        
         let index;
         lastNumber = lastNumber.toString();
         if ((index = lastNumber.indexOf('.')) > -1) {
@@ -376,7 +399,7 @@ class CalcController {
 
         }
         
-        if (!lastNumber) {
+        if (!lastNumber || (this._operation.length == 1 && this._operation[0] == 0)) {
 
             lastNumber = 0;
 
@@ -415,7 +438,7 @@ class CalcController {
             } else {
             
                 //Number
-                if (value == '0' && this._operation[this._operation.length - 1] == '0' && this._operation.length == 1) {
+                if (!isNaN(value) && this._operation[this._operation.length - 1] == '0' && this._operation.length == 1) {
 
                     return;
 
