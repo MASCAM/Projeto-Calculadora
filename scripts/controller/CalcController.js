@@ -2,6 +2,7 @@ class CalcController {
 
     constructor() {
 
+        this._pressedNumbers = 0;
         this._audio = new Audio('click.mp3');
         this._audioOnOff = false;
         this._lastOperator = '';
@@ -275,6 +276,7 @@ class CalcController {
 
     calc() {
 
+        this._pressedNumbers = 0;
         let last = '';
         this._lastOperator = this.getLastItem();
         if (this._operation.length < 3) {
@@ -346,12 +348,6 @@ class CalcController {
         let lastNumber = this.getLastItem(false);
         let index;
         lastNumber = lastNumber.toString();
-        if (lastNumber.length > 10) {
-
-            this.setError();
-            return;
-
-        }
         if ((index = lastNumber.indexOf('.')) > -1) {
 
             lastNumber = Array.from(lastNumber);
@@ -387,6 +383,39 @@ class CalcController {
 
     addOperation(value) {
 
+        if (this._operation.indexOf('.') > -1) {
+
+            if (!isNaN(value)) {
+
+                this._pressedNumbers += 1;
+                if (this._pressedNumbers > 8) {
+
+                    this._pressedNumbers = 0;
+                    this.clearAll();
+                    this.setError();
+                    return;
+
+                }
+
+            }
+
+        } else {
+
+            if (!isNaN(value)) {
+
+                this._pressedNumbers += 1;
+                if (this._pressedNumbers > 9 || (this._pressedNumbers == 9 && value == '.')) {
+
+                    this._pressedNumbers = 0;
+                    this.clearAll();
+                    this.setError();
+                    return;
+
+                }
+
+            }    
+
+        }
         if (isNaN(this.getLastOperation())) {
             //String
             if (this.isOperator(value)) {
@@ -431,6 +460,7 @@ class CalcController {
     setError() {
 
         this.displayCalc = "Error";
+        this._pressedNumbers = 0;
 
     }
 
