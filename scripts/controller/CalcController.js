@@ -2,6 +2,8 @@ class CalcController {
 
     constructor() {
 
+        this._audio = new Audio('click.mp3');
+        this._audioOnOff = false;
         this._lastOperator = '';
         this._lastNumber = '';
         this._equal = false;
@@ -55,6 +57,7 @@ class CalcController {
 
     initialize() {
 
+        window.alert("Double click on AC to toggle on and off the audio");
         this.setDisplayDateTime();
         setInterval(()=>{
 
@@ -63,18 +66,48 @@ class CalcController {
         }, 1000);
         this.setLastNumberToDisplay();
         this.pasteFromClipboard();
+        document.querySelectorAll('.btn-ac').forEach(btn => {
+
+            btn.addEventListener('dblclick', e => {
+
+                this.toggleAudio();
+
+            });
+
+        });
+
+    }
+
+    toggleAudio() {
+
+        this._audioOnOff = !this._audioOnOff;
+        if (this._audioOnOff) {
+
+            this._audio.play();
+
+        }
+
+    }
+
+    playAudio() {
+
+        if (this._audioOnOff) {
+
+            this._audio.play();
+
+        }
 
     }
 
     initKeyboard() {
 
-        if (isNaN(this.displayCalc)) {
-
-            this.clearAll();
-
-        }
         document.addEventListener('keyup', e => {
+            if (isNaN(this.displayCalc)) {
 
+                this.clearAll();
+    
+            }
+            this.playAudio();
             switch(e.key) {
 
                 case 'Escape':
@@ -95,8 +128,8 @@ class CalcController {
                     break;
                 case 'Enter':
                 case '=':
-                    if (this._operation.length > 2 || this._equal == true) {
-
+                    if (this._operation.length > 2 || this._equal == true) { //para evitar dar erro no console só executa o
+                                                                             //igual quando é conveniente
                         this._equal = true;
                         this.calc();
 
@@ -122,8 +155,8 @@ class CalcController {
                 case '7':
                 case '8':
                 case '9':
-                    if (this._equal && !this.isOperator(this.getLastOperation())) {
-                        
+                    if (this._equal && !this.isOperator(this.getLastOperation())) {     //se apertou igual e depois um número
+                                                                                        //limpa o array da calculadora
                         this.clearAll();
                         this._equal = false;
 
@@ -298,6 +331,20 @@ class CalcController {
     setLastNumberToDisplay() {
 
         let lastNumber = this.getLastItem(false);
+        lastNumber = lastNumber.toString();
+        if (lastNumber.indexOf('.') > -1) {
+
+            console.log(lastNumber);
+            lastNumber = Array.from(lastNumber);
+            while (lastNumber.length > 10) {
+
+                lastNumber.pop();
+
+            }
+            lastNumber = lastNumber.join('');
+
+        }
+        
         if (!lastNumber) {
 
             lastNumber = 0;
@@ -380,9 +427,10 @@ class CalcController {
             this.clearAll();
 
         }
+        this.playAudio();
         //verifica qual dos botões foi clicado e passa a devida operação
         switch(value) {
-
+            
             case 'ac':
                 this._equal = false;
                 this.clearAll();
