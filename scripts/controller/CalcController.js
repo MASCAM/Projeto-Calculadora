@@ -256,8 +256,20 @@ class CalcController {
 
     getResult() {
 
+        try { //tente resolver a expressão
+
+            return eval(this._operation.join(""));
+
+        } catch { //senão conseguir aparece Error no display
+
+            setTimeout(() => {
+
+                this.setError();
+
+            }, 1);
+
+        }
         
-        return eval(this._operation.join(""));
 
     }
 
@@ -334,7 +346,13 @@ class CalcController {
         let lastNumber = this.getLastItem(false);
         let index;
         lastNumber = lastNumber.toString();
-        if (lastNumber.indexOf('.') > -1) {
+        if (lastNumber.length > 10) {
+
+            this.setError();
+            return;
+
+        }
+        if ((index = lastNumber.indexOf('.')) > -1) {
 
             lastNumber = Array.from(lastNumber);
             while (lastNumber.length > 10) {
@@ -343,6 +361,16 @@ class CalcController {
 
             }
             index = lastNumber.length;
+            if (this._equal) {
+
+                while (lastNumber[index - 1] == '0') {
+
+                    lastNumber.pop();
+                    index--;
+    
+                }  
+
+            }
             lastNumber = lastNumber.join('');
 
         }
@@ -352,7 +380,7 @@ class CalcController {
             lastNumber = 0;
 
         }
-        lastNumber = parseFloat(lastNumber).toFixed(index - 2);
+        
         this.displayCalc = lastNumber;
 
     }
@@ -382,6 +410,11 @@ class CalcController {
             } else {
             
                 //Number
+                if (value == '0' && this._operation[this._operation.length - 1] == '0' && this._operation.length == 1) {
+
+                    return;
+
+                }
                 let newValue = this.getLastOperation().toString() + value.toString();
                 this.setLastOperation(newValue);
                 //atualizar display
