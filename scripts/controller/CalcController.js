@@ -24,6 +24,19 @@ class CalcController {
 
             let text = e.clipboardData.getData('Text');
             this.displayCalc = parseFloat(text);
+            if (!isNaN(text)) {
+                parseFloat(text);
+                if (this.isOperator(this.getLastOperation())) {
+
+                    this.pushOperation(text);
+
+                } else {
+
+                    this.setLastOperation(text);
+
+                }
+
+            }
 
         });
 
@@ -55,14 +68,21 @@ class CalcController {
 
     initKeyboard() {
 
+        if (isNaN(this.displayCalc)) {
+
+            this.clearAll();
+
+        }
         document.addEventListener('keyup', e => {
 
             switch(e.key) {
 
                 case 'Escape':
+                    this._equal = false;
                     this.clearAll();
                     break;
                 case 'Backspace':
+                    this._equal = false;
                     this.clearEntry();
                     break;
                 case '+':
@@ -70,15 +90,26 @@ class CalcController {
                 case '*':
                 case '/':
                 case '%':
+                    this._equal = false;
                     this.addOperation(e.key);
                     break;
                 case 'Enter':
                 case '=':
-                    this._equal = true;
-                    this.calc();
+                    if (this._operation.length > 2 || this._equal == true) {
+
+                        this._equal = true;
+                        this.calc();
+
+                    }
                     break;
                 case '.':
                 case ',':
+                    if (this._equal && !this.isOperator(this.getLastOperation())) {
+                        
+                        this.clearAll();
+                        this._equal = false;
+
+                    }
                     this.addDot();
                     break;
                 case '0':
@@ -134,8 +165,16 @@ class CalcController {
 
     clearEntry() {
 
-        this._operation.pop(); //retira um valor do topo do array de operadores
-        this.setLastNumberToDisplay();
+        if (this._operation.length == 1) {
+
+            this.clearAll();
+
+        } else {
+
+            this._operation.pop(); //retira um valor do topo do array de operadores
+            this.setLastNumberToDisplay();    
+
+        }
 
     }
 
@@ -202,6 +241,7 @@ class CalcController {
 
         if (this._operation.length > 3) {
 
+            this._equal = true;
             last = this._operation.pop();
             this._lastNumber = this.getResult(); 
 
@@ -300,6 +340,7 @@ class CalcController {
             }
 
         }
+        console.log(this._operation);
 
     }
 
@@ -319,12 +360,12 @@ class CalcController {
 
         }
 
-        if (this.isOperator(lastOperation) || !lastOperation) {
-
+        if (this.isOperator(lastOperation) || !lastOperation && this.getLastOperation() != 0) {
+            
             this.pushOperation('0.');
 
         } else {
-
+            
             this.setLastOperation(lastOperation.toString() + '.');
 
         }
@@ -333,35 +374,58 @@ class CalcController {
     }
 
     execBtn(value) {
+
+        if (isNaN(this.displayCalc)) {
+
+            this.clearAll();
+
+        }
         //verifica qual dos botões foi clicado e passa a devida operação
         switch(value) {
 
             case 'ac':
+                this._equal = false;
                 this.clearAll();
                 break;
             case 'ce':
+                this._equal = false;
                 this.clearEntry();
                 break;
             case 'soma':
+                this._equal = false;
                 this.addOperation('+');
                 break;
             case 'subtracao':
+                this._equal = false;
                 this.addOperation('-');
                 break;
             case 'divisao':
+                this._equal = false;
                 this.addOperation('/');
                 break;
             case 'multiplicacao':
+                this._equal = false;
                 this.addOperation('*');
                 break;
             case 'porcento':
+                this._equal = false;
                 this.addOperation('%');
                 break;
             case 'igual':
-                this._equal = true;
-                this.calc();
+                if (this._operation.length > 2 || this._equal == true) {
+
+                    this._equal = true;
+                    this.calc();
+
+                }
                 break;
             case 'ponto':
+                if (this._equal && !this.isOperator(this.getLastOperation())) {
+                        
+                    this.clearAll();
+                    this._equal = false;
+
+                }
                 this.addDot();
                 break;
             case '0':
