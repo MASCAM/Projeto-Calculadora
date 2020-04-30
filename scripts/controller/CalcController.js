@@ -374,7 +374,18 @@ class CalcController {
             return;
 
         }
-        
+        if (this._operation.length == 1 && this._operation[0] == 0) {
+
+            this.displayCalc = this._operation[0];
+            return;
+
+        }
+        if (this._operation[this._operation.length - 1] == '0') {
+
+            this.displayCalc = '0';
+            return;
+
+        }
         let index;
         lastNumber = lastNumber.toString();
         if ((index = lastNumber.indexOf('.')) > -1) {
@@ -394,6 +405,11 @@ class CalcController {
                     index--;
     
                 }  
+                if (lastNumber[index - 1] == '.') {
+
+                    lastNumber[index - 1].pop();
+
+                }
 
             }
             lastNumber = lastNumber.join('');
@@ -410,7 +426,7 @@ class CalcController {
     }
 
     addOperation(value) {
-
+        
         if (this.getLastOperation() == '0' && value == '0') {
 
             return;
