@@ -262,9 +262,9 @@ class CalcController {
             for (let i = 0; i < this._operation.length; i++) {
 
                 if (this._operation[i] < 0 && sign == true) {
-                    console.log(this._operation[i]);
+
                     this._operation[i] *= -1;
-                    console.log(this._operation[i]);
+
                     break;
 
                 } else if (this._operation[i] == '-') {
@@ -329,7 +329,6 @@ class CalcController {
         } else {
             
             this._operation = [result];
-            console.log(this._operation);
             if (last) {
 
                 this._operation.push(last);
@@ -468,7 +467,6 @@ class CalcController {
             }
 
         }
-        console.log(this._operation);
 
     }
 
